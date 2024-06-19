@@ -1,0 +1,238 @@
+{
+	"annotations": {
+	  "list": [
+		{
+		  "builtIn": 1,
+		  "datasource": {
+			"type": "grafana",
+			"uid": "-- Grafana --"
+		  },
+		  "enable": true,
+		  "hide": true,
+		  "iconColor": "rgba(0, 211, 255, 1)",
+		  "name": "Annotations & Alerts",
+		  "type": "dashboard"
+		}
+	  ]
+	},
+	"editable": true,
+	"fiscalYearStartMonth": 0,
+	"graphTooltip": 0,
+	"id": 5,
+	"links": [],
+	"panels": [
+	  {
+		"datasource": {
+		  "type": "victoriametrics-datasource",
+		  "uid": "ddp8xeoleh3wgb"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "mode": "palette-classic"
+			},
+			"custom": {
+			  "axisBorderShow": false,
+			  "axisCenteredZero": false,
+			  "axisColorMode": "text",
+			  "axisLabel": "",
+			  "axisPlacement": "auto",
+			  "axisSoftMin": 0,
+			  "barAlignment": 0,
+			  "drawStyle": "line",
+			  "fillOpacity": 0,
+			  "gradientMode": "none",
+			  "hideFrom": {
+				"legend": false,
+				"tooltip": false,
+				"viz": false
+			  },
+			  "insertNulls": false,
+			  "lineInterpolation": "linear",
+			  "lineWidth": 1,
+			  "pointSize": 5,
+			  "scaleDistribution": {
+				"type": "linear"
+			  },
+			  "showPoints": "auto",
+			  "spanNulls": false,
+			  "stacking": {
+				"group": "A",
+				"mode": "none"
+			  },
+			  "thresholdsStyle": {
+				"mode": "off"
+			  }
+			},
+			"decimals": 1,
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			},
+			"unit": "decbytes"
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 16,
+		  "w": 24,
+		  "x": 0,
+		  "y": 0
+		},
+		"id": 2,
+		"options": {
+		  "legend": {
+			"calcs": [],
+			"displayMode": "list",
+			"placement": "bottom",
+			"showLegend": true
+		  },
+		  "tooltip": {
+			"maxHeight": 600,
+			"mode": "single",
+			"sort": "none"
+		  }
+		},
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "victoriametrics-datasource",
+			  "uid": "ddp8xeoleh3wgb"
+			},
+			"editorMode": "code",
+			"expr": "podman_container_mem_usage_bytes{id=~\".+\"} * on (id) group_left(name, image) podman_container_info{id=~\".+\"}",
+			"legendFormat": "{{name}}",
+			"range": true,
+			"refId": "A"
+		  }
+		],
+		"title": "Memory Usage",
+		"type": "timeseries"
+	  },
+	  {
+		"datasource": {
+		  "type": "victoriametrics-datasource",
+		  "uid": "ddp8xeoleh3wgb"
+		},
+		"fieldConfig": {
+		  "defaults": {
+			"color": {
+			  "mode": "palette-classic"
+			},
+			"custom": {
+			  "axisBorderShow": false,
+			  "axisCenteredZero": false,
+			  "axisColorMode": "text",
+			  "axisLabel": "",
+			  "axisPlacement": "auto",
+			  "axisSoftMin": 0,
+			  "barAlignment": 0,
+			  "drawStyle": "line",
+			  "fillOpacity": 0,
+			  "gradientMode": "none",
+			  "hideFrom": {
+				"legend": false,
+				"tooltip": false,
+				"viz": false
+			  },
+			  "insertNulls": false,
+			  "lineInterpolation": "linear",
+			  "lineWidth": 1,
+			  "pointSize": 5,
+			  "scaleDistribution": {
+				"type": "linear"
+			  },
+			  "showPoints": "auto",
+			  "spanNulls": false,
+			  "stacking": {
+				"group": "A",
+				"mode": "none"
+			  },
+			  "thresholdsStyle": {
+				"mode": "off"
+			  }
+			},
+			"decimals": 1,
+			"mappings": [],
+			"thresholds": {
+			  "mode": "absolute",
+			  "steps": [
+				{
+				  "color": "green",
+				  "value": null
+				},
+				{
+				  "color": "red",
+				  "value": 80
+				}
+			  ]
+			},
+			"unit": "percentunit"
+		  },
+		  "overrides": []
+		},
+		"gridPos": {
+		  "h": 16,
+		  "w": 24,
+		  "x": 0,
+		  "y": 16
+		},
+		"id": 1,
+		"options": {
+		  "legend": {
+			"calcs": [],
+			"displayMode": "list",
+			"placement": "bottom",
+			"showLegend": true
+		  },
+		  "tooltip": {
+			"maxHeight": 600,
+			"mode": "single",
+			"sort": "none"
+		  }
+		},
+		"targets": [
+		  {
+			"datasource": {
+			  "type": "victoriametrics-datasource",
+			  "uid": "ddp8xeoleh3wgb"
+			},
+			"editorMode": "code",
+			"expr": "sum(rate(podman_container_cpu_seconds_total{id=~\".+\"}[1m])) by (id) * on (id) group_left(name, image) podman_container_info{id=~\".+\"}",
+			"legendFormat": "{{name}}",
+			"range": true,
+			"refId": "A"
+		  }
+		],
+		"title": "% cpu per container",
+		"type": "timeseries"
+	  }
+	],
+	"refresh": "auto",
+	"schemaVersion": 39,
+	"tags": [],
+	"templating": {
+	  "list": []
+	},
+	"time": {
+	  "from": "now-15m",
+	  "to": "now"
+	},
+	"timeRangeUpdatedDuringEditOrView": false,
+	"timepicker": {},
+	"timezone": "browser",
+	"title": "Podman",
+	"uid": "bdp69juqcu9kwe",
+	"version": 4,
+	"weekStart": ""
+  }

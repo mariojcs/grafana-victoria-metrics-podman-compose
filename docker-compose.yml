@@ -1,0 +1,73 @@
+version: '3.7'
+
+services:
+  node-exp:
+    image: docker.io/prom/node-exporter:v1.8.1
+    container_name: node-exporter
+    restart: unless-stopped
+    depends_on:
+      - "victoriametrics"
+#    ports:
+#      - 9100:9100
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+
+  prometheus-podman-exporter:
+    image: quay.io/navidys/prometheus-podman-exporter:v1.12.0
+    container_name: podman-exporter
+    environment:
+      - CONTAINER_HOST=unix:///run/podman/podman.sock
+    volumes:
+#      - ${XDG_RUNTIME_DIR}/podman/podman.sock:/run/podman/podman.sock
+      - /run/user/1000/podman/podman.sock:/run/podman/podman.sock
+#    ports:
+#      - "9882:9882"
+    userns_mode: "keep-id"
+    security_opt:
+      - label=disable
+
+  victoriametrics:
+    build: victoria-metrics
+    image: localhost/my-victoria-metrics
+    container_name: victoria-metrics
+#    ports:
+#      - 8428:8428
+    volumes:
+      - victoria-storage:/victoria-metrics-data
+    command:
+#      - "--storageDataPath=/storage"
+#      - "--httpListenAddr=127.0.0.1:8428"
+      - "--promscrape.config=/opt/victoriametrics/scrape.yaml"
+#      - "--retentionPeriod=100y"
+      - "--selfScrapeInterval=1s"
+    restart: always
+
+  grafana:
+    image: docker.io/grafana/grafana-oss:11.0.0
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_INSTALL_PLUGINS=https://github.com/VictoriaMetrics/grafana-datasource/releases/download/v0.8.2/victoriametrics-datasource-v0.8.2.zip;victoriametrics-datasource
+      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=victoriametrics-datasource
+      - GF_RENDERING_SERVER_URL=http://renderer:8081/render
+      - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
+      - GF_LOG_FILTERS=rendering:debug
+    ports:
+      - '3500:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+  renderer:
+    image: docker.io/grafana/grafana-image-renderer:3.11.0
+    container_name: renderer
+
+volumes:
+  grafana-storage: {}
+  victoria-storage: {}
