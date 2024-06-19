@@ -72,7 +72,7 @@ Now adjust the following command to the information you collected
 ```bash
 wget -O panel.png \
  --header="Authorization: Bearer ${TOKEN}" \
- "${IMAGE_URL}"
+ "http://localhost:3000/render/d-solo/cdp5v6pkxgl4wd/server-stats?orgId=1&from=now-3h&to=now&panelId=3&width=1000&height=500&scale=1&tz=UTC"
 ```
 
 This should result on a panel.png 
